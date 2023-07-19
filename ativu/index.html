@@ -8,25 +8,63 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <input type="hidden" id="layout" value="" />
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
     </nav>
 
     <div class="container my-5">
-      <h1>Hello, world!</h1>
+      <h1>Olá!</h1>
       <div class="col-lg-8 px-0">
-        <p class="fs-5">You've successfully loaded up the Bootstrap starter example. It includes <a href="https://getbootstrap.com/">Bootstrap 5</a> via the <a href="https://www.jsdelivr.com/package/npm/bootstrap">jsDelivr CDN</a> and includes an additional CSS and JS file for your own code.</p>
-        <p>Feel free to download or copy-and-paste any parts of this example.</p>
+        <p class="fs-5">Este é o ambiente de testes até nossa reunião</p>
+        <p class="fs-5"></p>É uma solução intermediaria para testarmos o fluxo do arquivo: disponibilização, processamento e retorno<br clear="all">nela, a entrada dos arquivos está manual</p>
 
+        <p class="fs-5">Atualmente 4 dos 5 layouts e modelos de processamento estão disponibilizados:</p>
+          <ul>
+              <li>Fatura Oi, todos os campos retornados</li>
+              <li>Fatura Vivo, todos os campos retornados</li>
+              <li>Fatura Mottanet, todoss os campos retornados</li>
+          </ul>
+
+          <p>
+            Em desenvolvimento:
+            <li>Nota Fiscal Mottanet...</li>
+            <li>Aprimoramenntos do código...</li>
+          </p>
+
+          <p>
+            Durante o desenvolvimento algumas perguntas:
+            <ul>
+              <li>Poderiamos validar alguns campos com os códigos de barras ?</li>
+              <li>Seria possível disponibilzar alguma fatura superior a 100 R$?</li>
+              <li>Formatações dos campos: monetários, data, etc...</li>
+              <li>O modelos de fatura podem ser automaticamente definidos em tempo de projeto</li>
+              <li>Valores decimais por vírgula, quando abertos pelo excel podem ser transformados</li>
+              <li>Coluna <code>checksum</code> foi adicinada de forma complementar</li>
+
+            </ul>
+          </p>
         <hr class="col-1 my-4">
-
+        <p>
+          Peço por favor que simulem uma carga diária de até de 20 arquivos
+        </p>
+        <p>
+          O processo de geração do CSV de retorno, consiste em:
+          <ul>
+            <li>Etapa 01: Clicar em "Enviar PDF" para o servidor</li>
+            <li>Etapa 02: Aguardar o ícone trocar de cor</li>
+            <li>Etapa 03: Selecionar o Modelo de Fatura</li>
+            <li>Etapa 04: Aguardar o carregamento textual</li>
+            <li>Etapa 05: Clicar em Baixar Arquivo</li>
+          </ul>
+        </p>
       </div>
     </div>
 
     <div class="container my-3">
         <div class="input-group">
             <input type="file" class="form-control" id="iptFilePDF" aria-label="Upload" accept="application/pdf">
-            <button class="btn btn-outline-secondary" type="button" id="iptFilePDFSend">Salvar arquivo</button>
+            <button class="btn btn-outline-secondary" type="button" id="iptFilePDFSend">Enviar PDF</button>
         </div>
     </div>
 
@@ -42,21 +80,35 @@
 
     <div class="container my-3">
       <div class="input-group mb-2">
-        <input id="iptPDFLeitor" type="text" class="form-control" placeholder="pdf a ser processado" aria-label="pdf a ser processado" aria-describedby="button-addon2">
-        <button class="btn btn-outline-secondary" type="button" id="btnParsePDF">Ler PDF</button>
+        <input id="iptPDFLeitor" readonly type="text" class="form-control" placeholder="pdf a ser processado" aria-label="pdf a ser processado" aria-describedby="button-addon2">
+        
+        <select id="slcLayout" class="form-select">
+          <option selected>Selecioanr Modelo de Fatura</option>
+          <option value="b-oi">Fatura Oi</option>
+          <option value="b-vivo">Fatura Vivo</option>
+          <option value="b-mottanet">Fatura Mottanet</option>
+          <option value="nf-mottanet" disabled>Nota Fiscal Mottanet</option>
+        </select>
+        <button class="btn btn-outline-secondary" type="button" id="btnParsePDF">Ler PDF</button>        
       </div>
+    </div>
+    <div class="container my-3">
+
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Resposta em texto</label>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
     </div>
     
     <div class="container my-5">
       <div class="card" style="width: 12rem;">
         <img id="imgCSV" class="card-img-top" src="/dist/csv-icon-shadow.png" alt="csv imagem">
         <div class="card-body">
-          <button id="btnDownloadCSV" type="button" class="btn btn-outline-success" >Baixar Arquivo</button>
+          <button id="btnBaixarArquivoCSV" type="button" class="btn btn-outline-success" >Baixar Arquivo</button>
         </div>
       </div>
     </div>
     
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
     <script>
@@ -66,32 +118,96 @@
             const iptFile = document.querySelector(`#iptFilePDF`);
             const iptPDFLeitor = document.querySelector(`#iptPDFLeitor`);
 
+            const exampleFormControlTextarea1 = document.querySelector(`#exampleFormControlTextarea1`);
+
             const btnParsePDF = document.querySelector(`#btnParsePDF`);
             const btnSendPDF = document.querySelector(`#iptFilePDFSend`);
+            const btnBaixarArquivoCSV = document.querySelector(`#btnBaixarArquivoCSV`);
+            
+            const elImgPDF = document.querySelector(`#imgPdf`);
+            const elImgCSV = document.querySelector(`#imgCSV`);
+            const iptLayout = document.querySelector(`#layout`);
+
+  
+            const elCardArquivo = document.querySelector(`#cardArquivo`);
+
+            const elements = document.getElementsByClassName("dropdown-item");
 
             
-        
-            const elImgPDF = document.querySelector(`#imgPdf`);
-            const elCardArquivo = document.querySelector(`#cardArquivo`);
+
+            btnBaixarArquivoCSV.onclick = () => {
+
+                  const textContent = exampleFormControlTextarea1.value;
+
+                  var fname = iptPDFLeitor.value;
+
+                  fname = fname.substr(0, fname.lastIndexOf('.'));
+                  fname = decodeURIComponent(fname);
+
+                  var blob = new Blob([textContent], { type: 'text/csv;charset=utf-8;' });
+                  if (navigator.msSaveBlob) { // IE 10+
+                      navigator.msSaveBlob(blob, `${fname}.csv`);
+                  } else {
+                      var link = document.createElement("a");
+                      if (link.download !== undefined) { // feature detection
+                          // Browsers that support HTML5 download attribute
+                          var url = URL.createObjectURL(blob);
+                          link.setAttribute("href", url);
+                          link.setAttribute("download", `${fname}.csv`);
+                          link.style.visibility = 'hidden';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          URL.revokeObjectURL(url);
+                      }
+                  }
+            }
 
             btnParsePDF.onclick = async () => {
 
+              var elLayout = document.querySelector("#slcLayout");
+              var idLayout = elLayout.value;
+              //var text = elLayout.options[elLayout.selectedIndex].text;
+           
+              var fname = iptPDFLeitor.value;
+              fname = fname.substr(0, fname.lastIndexOf('.'));
+              fname = decodeURIComponent(fname);
+
+              
               const rawResponse = await fetch('https://naoqpw313h.execute-api.sa-east-1.amazonaws.com/homolog', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({output: 'csv'})
+                body: JSON.stringify(
+                  {
+                    output: 'csv',
+                    layout:idLayout,
+                    fname:`${fname}.pdf`|| ''
+                })
               });
 
               const content = await rawResponse.json();
 
-              console.log(content);
+              exampleFormControlTextarea1.value = content.body || '';
+
+              elImgCSV.src = `/dist/csv-icon.png?${Math.random()}`
+
 
             }
 
             btnSendPDF.onclick = async () => {
+
+                let msg =  ``;
+                elImgPDF.src = `/dist/pdf-icon-shadow.png?${Math.random()}`;
+                elImgCSV.src = `/dist/csv-icon-shadow.png?${Math.random()}`;
+
+                elCardArquivo.innerText = msg;
+                elCardArquivo.setAttribute('style','');
+                
+                iptPDFLeitor.value = '';
+                exampleFormControlTextarea1.value = '';
 
                 const formData = new FormData();
                 let elFile = iptFile.files[0];
