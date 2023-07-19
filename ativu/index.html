@@ -52,9 +52,9 @@
           O processo de geração do CSV de retorno, consiste em:
           <ul>
             <li>Etapa 01: Clicar em "Enviar PDF" para o servidor</li>
-            <li>Etapa 02: Aguardar o ícone trocar de cor</li>
+            <li>Etapa 02: Aguardar <code>~2s</code> o ícone trocar de cor</li>
             <li>Etapa 03: Selecionar o Modelo de Fatura</li>
-            <li>Etapa 04: Aguardar o carregamento textual</li>
+            <li>Etapa 04: Aguardar <code>~4s</code> o carregamento textual</li>
             <li>Etapa 05: Clicar em Baixar Arquivo</li>
           </ul>
         </p>
@@ -83,7 +83,7 @@
         <input id="iptPDFLeitor" readonly type="text" class="form-control" placeholder="pdf a ser processado" aria-label="pdf a ser processado" aria-describedby="button-addon2">
         
         <select id="slcLayout" class="form-select">
-          <option selected>Selecioanr Modelo de Fatura</option>
+          <option selected>Selecionar Modelo de Fatura</option>
           <option value="b-oi">Fatura Oi</option>
           <option value="b-vivo">Fatura Vivo</option>
           <option value="b-mottanet">Fatura Mottanet</option>
@@ -256,9 +256,7 @@
                 .catch(error => {
                   console.error('Error uploading file:', error);
                 });
-                
-
-                
+ 
             }
 
         }
