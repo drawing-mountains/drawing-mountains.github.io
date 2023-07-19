@@ -77,24 +77,43 @@
 
             btnSendPDF.onclick = async () => {
 
+                const formData = new FormData();
                 let elFile = iptFile.files[0];
+                
+                formData.append('file', elFile);
+
                 let fname = elFile.name;
+
                 fname = encodeURIComponent(fname);
 
-                alert(fname);
-
-                var resp = await fetch(`https://ezvx12dq32.execute-api.sa-east-1.amazonaws.com/hmg?key=${fname}`
+                var resp = await fetch(`https://hz9sz0yfub.execute-api.sa-east-1.amazonaws.com/homolog?fileName=${fname}`
                 , {
-                    method: "GET",
-                    mode: 'cors',
-                    headers: {
-                      'Access-Control-Allow-Origin' : '*',
-                      'Content-Type': 'application/json'
-                    },
+                    method: "GET"
                   });  
-                var jobj = await resp;  
 
-                alert(JSON.stringify(jobj))
+                var jobj = await resp.json();
+
+                console.log(jobj.fileUploadURL)
+
+                fetch(`${jobj.fileUploadURL || '/errror'}`, {
+                  method: 'PUT',
+                  body: formData
+                })
+                .then(response => {
+                  if (response.ok) {
+                    return response.json();
+                  } else {
+                    throw new Error('File upload failed');
+                  }
+                })
+                .then(data => {
+                  console.log('Server response:', data);
+                })
+                .catch(error => {
+                  console.error('Error uploading file:', error);
+                });
+                
+
                 
             }
 
