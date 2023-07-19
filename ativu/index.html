@@ -71,7 +71,7 @@
 
     <div class="container my-5">
       <div class="card" style="width: 12rem;">
-        <img id="imgPdf" class="card-img-top" src="/dist/pdf-icon-shadow.png" alt="Card image cap">
+        <img id="imgPdf" class="card-img-top" src="./dist/pdf-icon-shadow.png" alt="Card image cap">
         <div class="card-body">
           <p class="card-text" id="cardArquivo" style="display:none"></p>
         </div>
@@ -102,7 +102,7 @@
     
     <div class="container my-5">
       <div class="card" style="width: 12rem;">
-        <img id="imgCSV" class="card-img-top" src="/dist/csv-icon-shadow.png" alt="csv imagem">
+        <img id="imgCSV" class="card-img-top" src="./dist/csv-icon-shadow.png" alt="csv imagem">
         <div class="card-body">
           <button id="btnBaixarArquivoCSV" type="button" class="btn btn-outline-success" >Baixar Arquivo</button>
         </div>
@@ -192,7 +192,7 @@
 
               exampleFormControlTextarea1.value = content.body || '';
 
-              elImgCSV.src = `/dist/csv-icon.png?${Math.random()}`
+              elImgCSV.src = `./dist/csv-icon.png?${Math.random()}`
 
 
             }
@@ -200,8 +200,8 @@
             btnSendPDF.onclick = async () => {
 
                 let msg =  ``;
-                elImgPDF.src = `/dist/pdf-icon-shadow.png?${Math.random()}`;
-                elImgCSV.src = `/dist/csv-icon-shadow.png?${Math.random()}`;
+                elImgPDF.src = `./dist/pdf-icon-shadow.png?${Math.random()}`;
+                elImgCSV.src = `./dist/csv-icon-shadow.png?${Math.random()}`;
 
                 elCardArquivo.innerText = msg;
                 elCardArquivo.setAttribute('style','');
@@ -238,7 +238,7 @@
                   if (response.ok) {
 
                     let msg =  `Arquivo ${fname} salvo na nuvem em ${currTime}`;
-                    elImgPDF.src = `/dist/pdf-icon.png?${Math.random()}`
+                    elImgPDF.src = `./dist/pdf-icon.png?${Math.random()}`
                     elCardArquivo.innerText = msg;
                     elCardArquivo.setAttribute('style','');
 
@@ -256,7 +256,9 @@
                 .catch(error => {
                   console.error('Error uploading file:', error);
                 });
- 
+                
+
+                
             }
 
         }
